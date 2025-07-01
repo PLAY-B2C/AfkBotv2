@@ -1,0 +1,7 @@
+{
+  "serverHost": "example.aternos.me",
+  "serverPort": 25565,
+  "botUsername": "AFK_Bot",
+  "loginCommand": "/login yourPassword",
+  "autoMessages": ["I'm alive!", "Still AFK!", "Bot is running!"]
+}
