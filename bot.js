@@ -18,12 +18,12 @@ function createBot() {
     console.log(`✅ ${config.botUsername} joined the server.`);
     bot.chat('/login 3043AA');
 
-    // 🔁 Anti-AFK movement loop
+    // 🔁 Anti-AFK jump every 40s
     let toggle = false;
     setInterval(() => {
       bot.setControlState('jump', toggle);
       toggle = !toggle;
-    }, 40000); // every 40s
+    }, 40000);
 
     // 💬 Auto chat every 120s
     const messages = ["I'm Areeb I like boys", "Areeb loves Dihh"];
@@ -31,7 +31,14 @@ function createBot() {
     setInterval(() => {
       bot.chat(messages[msgIndex]);
       msgIndex = (msgIndex + 1) % messages.length;
-    }, 120000); // every 120s
+    }, 120000);
+
+    // 🔁 Auto rotate slightly every 1s
+    let yaw = 0;
+    setInterval(() => {
+      yaw += 0.1;
+      bot.look(yaw, 0, true);
+    }, 1000);
   });
 
   bot.on('end', () => {
