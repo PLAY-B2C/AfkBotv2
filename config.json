@@ -1,7 +1,7 @@
 {
-  "serverHost": "example.aternos.me",
-  "serverPort": 25565,
+  "serverHost": "EternxlsSMP.aternos.me",
+  "serverPort": 48918,
   "botUsername": "AFK_Bot",
-  "loginCommand": "/login yourPassword",
+  "loginCommand": "/login 3043AA",
   "autoMessages": ["I'm alive!", "Still AFK!", "Bot is running!"]
 }
