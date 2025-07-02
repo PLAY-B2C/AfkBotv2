@@ -26,12 +26,12 @@ function createBot() {
     }, 40000);
 
     // 💬 Auto chat every 120s
-    const messages = ["I'm Areeb I like boys", "Areeb loves Dihh"];
+    const messages = ["I'm Areeb I like boys", "Areeb Bhai aage badho"];
     let msgIndex = 0;
     setInterval(() => {
       bot.chat(messages[msgIndex]);
       msgIndex = (msgIndex + 1) % messages.length;
-    }, 120000);
+    }, 240000);
 
     // 🔁 Auto rotate slightly every 1s
     let yaw = 0;
@@ -62,7 +62,7 @@ function reconnectWithDelay() {
   setTimeout(() => {
     console.log('🔁 Attempting to reconnect...');
     createBot();
-  }, 10000); // 10 seconds
+  }, 600000); // 10 seconds
 }
 
 createBot();
