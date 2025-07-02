@@ -42,13 +42,27 @@ function createBot() {
   });
 
   bot.on('end', () => {
-    console.log('❌ Disconnected. Reconnecting in 30s...');
-    setTimeout(createBot, 30000);
+    console.log('❌ Bot was disconnected. Reconnecting in 10s...');
+    reconnectWithDelay();
   });
 
   bot.on('error', err => {
-    console.log('⚠️ Bot error:', err);
+    console.log(`⚠️ Bot error: ${err.message}`);
+    reconnectWithDelay();
   });
+}
+
+function reconnectWithDelay() {
+  if (bot) {
+    try {
+      bot.quit();
+    } catch (_) {}
+    bot = null;
+  }
+  setTimeout(() => {
+    console.log('🔁 Attempting to reconnect...');
+    createBot();
+  }, 10000); // 10 seconds
 }
 
 createBot();
