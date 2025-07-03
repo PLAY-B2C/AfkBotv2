@@ -11,7 +11,7 @@ function createBot() {
     port: config.serverPort,
     username: config.botUsername,
     auth: 'offline',
-    version: 1.7.2,
+    version: 1.21.4,
     viewDistance: 'tiny'
   });
 
