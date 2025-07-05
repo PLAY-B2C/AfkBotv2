@@ -17,12 +17,11 @@ function createBot() {
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
 
-    // Login delay
-    setTimeout(() => {
-      if (bot && bot.chat) {
-        bot.chat('/login 3043AA');
-      }
-    }, 3000);
+setTimeout(() => {
+  if (bot && bot.chat) {
+    bot.chat('/login 3043AA');
+  }
+}, 5000); // Wait 5 seconds before sending login
 
     clearInterval(jumpInterval);
     clearInterval(chatInterval);
