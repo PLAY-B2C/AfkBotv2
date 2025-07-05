@@ -78,10 +78,22 @@ function createBot() {
 
     chatInterval = setInterval(() => {
       if (!bot || !bot.player) return;
-      const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
-      bot.chat(`📢 Areeb Fact: ${msg}`);
-    }, 300000); // every 5 minutes
-  });
+      const intros = [
+  "📢 Did you know?",
+  "📣 True Story:",
+  "🧠 Fun Fact:",
+  "💀 Legend says",
+  "📚 Weird but true:",
+  "🎤 Word on the street:",
+  "💬 People say:",
+  "📖 In the book of roasts:",
+  "😆 Here's one:",
+  "🔍 Observation:"
+];
+
+const intro = intros[Math.floor(Math.random() * intros.length)];
+const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
+bot.chat(`${intro} ${msg}`);
 
   bot.on('end', () => {
     console.log('❌ Bot was disconnected. Reconnecting in 5s...');
