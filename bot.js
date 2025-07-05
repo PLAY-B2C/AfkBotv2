@@ -6,9 +6,6 @@ let jumpInterval, chatInterval;
 let reconnecting = false;
 
 function createBot() {
-  if (reconnecting) return;
-
-  reconnecting = true;
   console.log('🔁 Attempting to connect...');
 
   bot = mineflayer.createBot({
@@ -22,7 +19,6 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
-    reconnecting = false;
 
     setTimeout(() => {
       if (bot && bot.chat) {
@@ -33,7 +29,6 @@ function createBot() {
     clearInterval(jumpInterval);
     clearInterval(chatInterval);
 
-    // 🔁 Anti-AFK jump every 40s
     let toggle = false;
     jumpInterval = setInterval(() => {
       if (!bot || !bot.entity) return;
@@ -41,7 +36,6 @@ function createBot() {
       toggle = !toggle;
     }, 40000);
 
-    // 🧠 Roast Areeb every 5 minutes
     const intros = [
       "📢 Did you know?",
       "📣 True Story:",
@@ -99,17 +93,17 @@ function createBot() {
   });
 
   bot.on('end', () => {
-    console.log('❌ Bot was disconnected. Reconnecting in 5s...');
-    reconnectWithDelay();
+    console.log('❌ Bot was disconnected.');
+    scheduleReconnect();
   });
 
   bot.on('error', err => {
     console.log(`⚠️ Bot error: ${err.message}`);
-    reconnectWithDelay();
+    scheduleReconnect();
   });
 }
 
-function reconnectWithDelay() {
+function scheduleReconnect() {
   if (reconnecting) return;
 
   reconnecting = true;
@@ -126,7 +120,7 @@ function reconnectWithDelay() {
   setTimeout(() => {
     reconnecting = false;
     createBot();
-  }, 5000); // reconnect every 5s
+  }, 5000); // Reconnect after 5 seconds
 }
 
 createBot();
