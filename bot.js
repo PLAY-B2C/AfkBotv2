@@ -1,9 +1,8 @@
 const mineflayer = require('mineflayer');
 const config = require('./config.json');
-const { Vec3 } = require('vec3');
 
 let bot;
-let jumpInterval, chatInterval, rotateInterval;
+let jumpInterval, chatInterval;
 
 function createBot() {
   bot = mineflayer.createBot({
@@ -11,7 +10,7 @@ function createBot() {
     port: config.serverPort,
     username: config.botUsername,
     auth: 'offline',
-    version: false,
+    version: "1.21.4",
     viewDistance: 'tiny'
   });
 
@@ -27,26 +26,50 @@ function createBot() {
       toggle = !toggle;
     }, 40000);
 
-    // 💬 Auto chat every 120s
-    const messages = ["I'm Areeb I like boys", "Areeb loves Dihh"];
-    let msgIndex = 0;
+    // 💬 Roasts every 5 minutes
+    const factsAboutAreeb = [
+      // Skinny jokes
+      "Areeb is so skinny, skeletons ask him for weight tips.",
+      "Areeb once walked through iron bars... sideways.",
+      "When Areeb turns sideways, he vanishes.",
+      "Areeb uses a toothpick as a backrest.",
+      "Areeb's shadow is in 2D.",
+      "Areeb's armor falls off because there's nothing to hold it.",
+      "Zombies don't bother attacking Areeb — not enough meat.",
+      "Areeb wears leather armor to avoid being blown away by wind.",
+      "Even Endermen think Areeb is underfed.",
+      "Areeb eats in-game and still loses weight.",
+
+      // Girlfriend jokes
+      "Areeb's girlfriend once sat on his base and crashed the server.",
+      "They made a boat together. It sank immediately.",
+      "Her armor stand needed diamond reinforcements.",
+      "Areeb rides a horse, she rides a Ravager.",
+
+      // Masturbation (clean) jokes
+      "Areeb’s favorite potion is... awkward.",
+      "Areeb spends too much time in the shower — with his sword.",
+      "Villagers close doors when Areeb walks by — they know.",
+      "Areeb's favorite block? Smooth quartz.",
+      "He tried to smelt 'privacy' in a furnace.",
+
+      // Original funnies
+      "Areeb once got lost in a straight hallway.",
+      "Areeb thinks gravel is a renewable resource.",
+      "Areeb tried to tame a creeper with bones.",
+      "Areeb crafted stairs... out of diamonds.",
+      "Areeb once tried to eat a furnace thinking it was cake."
+    ];
+
     chatInterval = setInterval(() => {
       if (!bot) return;
-      bot.chat(messages[msgIndex]);
-      msgIndex = (msgIndex + 1) % messages.length;
-    }, 120000);
-
-    // 🔁 Auto rotate slightly every 1s
-    let yaw = 0;
-    rotateInterval = setInterval(() => {
-      if (!bot || !bot.entity) return;
-      yaw += 0.1;
-      bot.look(yaw, 0, true);
-    }, 1000);
+      const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
+      bot.chat(`📢 Areeb Fact: ${msg}`);
+    }, 300000); // every 5 minutes
   });
 
   bot.on('end', () => {
-    console.log('❌ Bot was disconnected. Reconnecting in 60s...');
+    console.log('❌ Bot was disconnected. Reconnecting in 5s...');
     reconnectWithDelay();
   });
 
@@ -58,21 +81,17 @@ function createBot() {
 
 function reconnectWithDelay() {
   if (bot) {
-    try {
-      bot.quit();
-    } catch (_) {}
+    try { bot.quit(); } catch (_) {}
     bot = null;
   }
 
-  // Clear all intervals to prevent crash
   clearInterval(jumpInterval);
   clearInterval(chatInterval);
-  clearInterval(rotateInterval);
 
   setTimeout(() => {
     console.log('🔁 Attempting to reconnect...');
     createBot();
-  }, 60000); // 🔁 Reconnect after 60 seconds
+  }, 5000); // Reconnect after 5s
 }
 
 createBot();
