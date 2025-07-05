@@ -3,8 +3,14 @@ const config = require('./config.json');
 
 let bot;
 let jumpInterval, chatInterval;
+let reconnecting = false;
 
 function createBot() {
+  if (reconnecting) return;
+
+  reconnecting = true;
+  console.log('🔁 Attempting to connect...');
+
   bot = mineflayer.createBot({
     host: config.serverHost,
     port: config.serverPort,
@@ -16,12 +22,13 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
+    reconnecting = false;
 
-setTimeout(() => {
-  if (bot && bot.chat) {
-    bot.chat('/login 3043AA');
-  }
-}, 5000); // Wait 5 seconds before sending login
+    setTimeout(() => {
+      if (bot && bot.chat) {
+        bot.chat('/login 3043AA');
+      }
+    }, 5000);
 
     clearInterval(jumpInterval);
     clearInterval(chatInterval);
@@ -80,14 +87,13 @@ setTimeout(() => {
     ];
 
     chatInterval = setInterval(() => {
-      if (bot && bot.chat && bot.player) {
-        const intro = intros[Math.floor(Math.random() * intros.length)];
-        const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
-        try {
-          bot.chat(`${intro} ${msg}`);
-        } catch (err) {
-          console.log("⚠️ Chat error:", err.message);
-        }
+      if (!bot || !bot.chat || !bot.player) return;
+      const intro = intros[Math.floor(Math.random() * intros.length)];
+      const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
+      try {
+        bot.chat(`${intro} ${msg}`);
+      } catch (err) {
+        console.log("⚠️ Chat error:", err.message);
       }
     }, 300000); // every 5 minutes
   });
@@ -104,16 +110,21 @@ setTimeout(() => {
 }
 
 function reconnectWithDelay() {
-  if (bot) {
-    try { bot.quit(); } catch (_) {}
-    bot = null;
-  }
+  if (reconnecting) return;
+
+  reconnecting = true;
 
   clearInterval(jumpInterval);
   clearInterval(chatInterval);
 
+  try {
+    if (bot) bot.quit();
+  } catch (_) {}
+
+  bot = null;
+
   setTimeout(() => {
-    console.log('🔁 Attempting to reconnect...');
+    reconnecting = false;
     createBot();
   }, 5000); // reconnect every 5s
 }
