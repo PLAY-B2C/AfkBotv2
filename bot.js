@@ -22,18 +22,25 @@ function createBot() {
 
     setTimeout(() => {
       if (bot && bot.chat) {
-        bot.chat('/login 3043AA');
+        try {
+          bot.chat('/login 3043AA');
+        } catch (err) {
+          console.log('⚠️ Login error:', err.message);
+        }
       }
     }, 5000);
 
-    clearInterval(jumpInterval);
-    clearInterval(chatInterval);
+    clearAllIntervals();
 
     let toggle = false;
     jumpInterval = setInterval(() => {
       if (!bot || !bot.entity) return;
-      bot.setControlState('jump', toggle);
-      toggle = !toggle;
+      try {
+        bot.setControlState('jump', toggle);
+        toggle = !toggle;
+      } catch (err) {
+        console.log('⚠️ Jump error:', err.message);
+      }
     }, 40000);
 
     const intros = [
@@ -49,47 +56,27 @@ function createBot() {
       "🔍 Observation:"
     ];
 
-    const factsAboutAreeb = [
+    const facts = [
       "Areeb is so skinny, skeletons ask him for weight tips.",
-      "Areeb once walked through iron bars... sideways.",
       "When Areeb turns sideways, he vanishes.",
-      "Areeb uses a toothpick as a backrest.",
-      "Areeb's shadow is in 2D.",
-      "Areeb's armor falls off because there's nothing to hold it.",
-      "Zombies don’t attack Areeb — not enough meat.",
-      "Even Endermen worry he might snap.",
-      "Areeb eats food and loses weight anyway.",
-      "Areeb once wore armor — and disappeared inside it.",
-      "Areeb's girlfriend once sat on his base and crashed the server.",
-      "They built a boat together... it sank instantly.",
-      "Her armor stand needed obsidian reinforcements.",
-      "Areeb rides a horse, she rides a Ravager.",
-      "Areeb’s favorite potion is... awkward.",
-      "He spends too much time in the AFK room.",
-      "Villagers shut doors when Areeb logs in.",
-      "He tried to craft 'privacy' using 8 glass blocks.",
-      "Favorite block? Smooth quartz. No questions.",
-      "Areeb says proudly: I'm LGBTQ – Looking Good, Totally Quirky!",
-      "Areeb identifies as a full stack of bones 🦴.",
-      "Areeb once tried to enchant a fishing rod with confidence.",
-      "Areeb’s gender is `function() { return false; }`",
-      "He says he's straight... until he meets an Enderman with fashion.",
-      "Areeb tried to tame a creeper with bones.",
-      "He crafted stairs out of diamonds.",
-      "He once ate a furnace thinking it was cake.",
-      "Areeb got lost in a straight hallway."
+      "Areeb once wore armor and disappeared inside it.",
+      "Areeb says: I'm LGBTQ – Looking Good, Totally Quirky!",
+      "His girlfriend sat on a block and crashed the server.",
+      "Areeb got lost in a straight hallway.",
+      "Even Endermen think he's fragile.",
+      "Areeb uses a fishing rod for confidence boosts.",
     ];
 
     chatInterval = setInterval(() => {
       if (!bot || !bot.chat || !bot.player) return;
-      const intro = intros[Math.floor(Math.random() * intros.length)];
-      const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
       try {
+        const intro = intros[Math.floor(Math.random() * intros.length)];
+        const msg = facts[Math.floor(Math.random() * facts.length)];
         bot.chat(`${intro} ${msg}`);
       } catch (err) {
         console.log("⚠️ Chat error:", err.message);
       }
-    }, 300000); // every 5 minutes
+    }, 300000);
   });
 
   bot.on('end', () => {
@@ -105,11 +92,9 @@ function createBot() {
 
 function scheduleReconnect() {
   if (reconnecting) return;
-
   reconnecting = true;
 
-  clearInterval(jumpInterval);
-  clearInterval(chatInterval);
+  clearAllIntervals();
 
   try {
     if (bot) bot.quit();
@@ -120,7 +105,23 @@ function scheduleReconnect() {
   setTimeout(() => {
     reconnecting = false;
     createBot();
-  }, 5000); // Reconnect after 5 seconds
+  }, 5000);
 }
+
+function clearAllIntervals() {
+  if (jumpInterval) clearInterval(jumpInterval);
+  if (chatInterval) clearInterval(chatInterval);
+}
+
+// 🛡️ Catch any unhandled crashes
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  scheduleReconnect();
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled Promise Rejection:', reason);
+  scheduleReconnect();
+});
 
 createBot();
