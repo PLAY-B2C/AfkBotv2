@@ -17,7 +17,7 @@ function createBot() {
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
 
-    // Wait before sending login
+    // Login delay
     setTimeout(() => {
       if (bot && bot.chat) {
         bot.chat('/login 3043AA');
@@ -35,7 +35,7 @@ function createBot() {
       toggle = !toggle;
     }, 40000);
 
-    // 🧠 Roast Areeb every 5 minutes with random intro
+    // 🧠 Roast Areeb every 5 minutes
     const intros = [
       "📢 Did you know?",
       "📣 True Story:",
@@ -81,10 +81,15 @@ function createBot() {
     ];
 
     chatInterval = setInterval(() => {
-      if (!bot || !bot.player) return;
-      const intro = intros[Math.floor(Math.random() * intros.length)];
-      const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
-      bot.chat(`${intro} ${msg}`);
+      if (bot && bot.chat && bot.player) {
+        const intro = intros[Math.floor(Math.random() * intros.length)];
+        const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
+        try {
+          bot.chat(`${intro} ${msg}`);
+        } catch (err) {
+          console.log("⚠️ Chat error:", err.message);
+        }
+      }
     }, 300000); // every 5 minutes
   });
 
@@ -111,7 +116,7 @@ function reconnectWithDelay() {
   setTimeout(() => {
     console.log('🔁 Attempting to reconnect...');
     createBot();
-  }, 5000); // reconnect after 5s
+  }, 5000); // reconnect every 5s
 }
 
 createBot();
