@@ -16,7 +16,19 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
-    bot.chat('/login 3043AA');
+
+    // Safe login
+    if (bot && bot.player) {
+      try {
+        bot.chat('/login 3043AA');
+      } catch (e) {
+        console.log("⚠️ Couldn't send login message:", e.message);
+      }
+    }
+
+    // Clear old intervals if any
+    clearInterval(jumpInterval);
+    clearInterval(chatInterval);
 
     // 🔁 Anti-AFK jump every 40s
     let toggle = false;
@@ -46,14 +58,14 @@ function createBot() {
       "Her armor stand needed diamond reinforcements.",
       "Areeb rides a horse, she rides a Ravager.",
 
-      // Masturbation (clean) jokes
+      // Masturbation (PG) jokes
       "Areeb’s favorite potion is... awkward.",
       "Areeb spends too much time in the shower — with his sword.",
       "Villagers close doors when Areeb walks by — they know.",
       "Areeb's favorite block? Smooth quartz.",
       "He tried to smelt 'privacy' in a furnace.",
 
-      // Original funnies
+      // OG roasts
       "Areeb once got lost in a straight hallway.",
       "Areeb thinks gravel is a renewable resource.",
       "Areeb tried to tame a creeper with bones.",
@@ -62,7 +74,7 @@ function createBot() {
     ];
 
     chatInterval = setInterval(() => {
-      if (!bot) return;
+      if (!bot || !bot.player) return;
       const msg = factsAboutAreeb[Math.floor(Math.random() * factsAboutAreeb.length)];
       bot.chat(`📢 Areeb Fact: ${msg}`);
     }, 300000); // every 5 minutes
@@ -91,7 +103,7 @@ function reconnectWithDelay() {
   setTimeout(() => {
     console.log('🔁 Attempting to reconnect...');
     createBot();
-  }, 5000); // Reconnect after 5s
+  }, 5000);
 }
 
 createBot();
