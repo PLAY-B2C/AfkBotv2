@@ -17,16 +17,13 @@ function createBot() {
   bot.once('spawn', () => {
     console.log(`✅ ${config.botUsername} joined the server.`);
 
-    // Safe login
-    if (bot && bot.player) {
-      try {
+    // Wait before sending login to avoid disconnect spam
+    setTimeout(() => {
+      if (bot && bot.chat) {
         bot.chat('/login 3043AA');
-      } catch (e) {
-        console.log("⚠️ Couldn't send login message:", e.message);
       }
-    }
+    }, 3000); // wait 3 seconds
 
-    // Clear old intervals if any
     clearInterval(jumpInterval);
     clearInterval(chatInterval);
 
@@ -38,39 +35,45 @@ function createBot() {
       toggle = !toggle;
     }, 40000);
 
-    // 💬 Roasts every 5 minutes
+    // 💬 Roast Areeb every 5 minutes
     const factsAboutAreeb = [
-      // Skinny jokes
+      // Skinny roasts
       "Areeb is so skinny, skeletons ask him for weight tips.",
       "Areeb once walked through iron bars... sideways.",
       "When Areeb turns sideways, he vanishes.",
       "Areeb uses a toothpick as a backrest.",
       "Areeb's shadow is in 2D.",
       "Areeb's armor falls off because there's nothing to hold it.",
-      "Zombies don't bother attacking Areeb — not enough meat.",
-      "Areeb wears leather armor to avoid being blown away by wind.",
-      "Even Endermen think Areeb is underfed.",
-      "Areeb eats in-game and still loses weight.",
+      "Zombies don’t attack Areeb — not enough meat.",
+      "Even Endermen worry he might snap.",
+      "Areeb eats food and loses weight anyway.",
+      "Areeb once wore armor — and disappeared inside it.",
 
       // Girlfriend jokes
       "Areeb's girlfriend once sat on his base and crashed the server.",
-      "They made a boat together. It sank immediately.",
-      "Her armor stand needed diamond reinforcements.",
+      "They built a boat together... it sank instantly.",
+      "Her armor stand needed obsidian reinforcements.",
       "Areeb rides a horse, she rides a Ravager.",
 
-      // Masturbation (PG) jokes
+      // PG jokes about habits
       "Areeb’s favorite potion is... awkward.",
-      "Areeb spends too much time in the shower — with his sword.",
-      "Villagers close doors when Areeb walks by — they know.",
-      "Areeb's favorite block? Smooth quartz.",
-      "He tried to smelt 'privacy' in a furnace.",
+      "He spends too much time in the AFK room.",
+      "Villagers shut doors when Areeb logs in.",
+      "He tried to craft 'privacy' using 8 glass blocks.",
+      "Favorite block? Smooth quartz. No questions.",
 
-      // OG roasts
-      "Areeb once got lost in a straight hallway.",
-      "Areeb thinks gravel is a renewable resource.",
+      // Proud quote
+      "Areeb says proudly: I'm LGBTQ – Looking Good, Totally Quirky!",
+      "Areeb identifies as a full stack of bones 🦴.",
+      "Areeb once tried to enchant a fishing rod with confidence.",
+      "Areeb’s gender is `function() { return false; }`",
+      "He says he's straight... until he meets an Enderman with fashion.",
+
+      // Silly
       "Areeb tried to tame a creeper with bones.",
-      "Areeb crafted stairs... out of diamonds.",
-      "Areeb once tried to eat a furnace thinking it was cake."
+      "He crafted stairs out of diamonds.",
+      "He once ate a furnace thinking it was cake.",
+      "Areeb got lost in a straight hallway."
     ];
 
     chatInterval = setInterval(() => {
